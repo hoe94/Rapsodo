@@ -1,0 +1,13 @@
+[project]
+name = "rapsodo-interview"
+version = "0.1.0"
+description = "Fast Excel Ingestion Script (Excel -> Staging CSV -> PostgreSQL)"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pandas>=1.5.0",
+    "openpyxl>=3.0.0",
+    "python-dotenv>=0.19.0",
+    "SQLAlchemy>=1.4.0",
+    "psycopg2-binary>=2.9.0",
+]
