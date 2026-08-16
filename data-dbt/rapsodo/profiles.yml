@@ -1,0 +1,27 @@
+rapsodo:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: rapsodo
+      password: rapsodo_password
+      port: 5432
+      dbname: rapsodo_db
+      schema: public
+    staging:
+      type: postgres
+      host: "{{ env_var('DB_HOST') }}"
+      user: "{{ env_var('DB_USER') }}"
+      password: "{{ env_var('DB_PASSWORD') }}"
+      port: 5432
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: "{{ env_var('DB_SCHEMA') }}"
+    prod:
+      type: postgres
+      host: "{{ env_var('DB_HOST') }}"
+      user: "{{ env_var('DB_USER') }}"
+      password: "{{ env_var('DB_PASSWORD') }}"
+      port: 5432
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: "{{ env_var('DB_SCHEMA') }}"
