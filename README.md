@@ -1,4 +1,4 @@
-# Getting Started Guide
+# Rapsodo Interview
 
 Follow the steps below to set up and process your data:
 
