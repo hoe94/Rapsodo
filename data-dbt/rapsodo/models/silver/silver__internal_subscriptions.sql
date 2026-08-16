@@ -15,7 +15,6 @@ WITH duplicated_internal_user_id AS (
         DISTINCT user_id
         , CASE WHEN COUNT(*) OVER(PARTITION BY user_id) > 1 THEN 'Duplicate' ELSE 'Unique' END AS duplicate_internal_record
     FROM bronze_rapsodo.internal_subscriptions
-    -- detect_duplicates
 )
 SELECT 
     user_id
@@ -41,9 +40,10 @@ FROM (
 		, COALESCE(base.end_date, '9999-12-31') AS end_date -- fill_null_values
 		, base.last_updated
         , CASE
-            WHEN di.duplicate_internal_record = 'Duplicate' THEN true
-            ELSE false
-        END AS is_duplicated
+            WHEN di.duplicate_internal_record = 'Duplicate' THEN TRUE
+            WHEN di.duplicate_internal_record = 'Unique' THEN FALSE
+            ELSE FALSE
+        END AS is_duplicated -- detect duplicates
         , gen_random_uuid() AS dw_id
         , CURRENT_USER AS dw_modified_by
         , CURRENT_TIMESTAMP AT TIME ZONE 'MYT' AS dw_modified_timestamp_myt
