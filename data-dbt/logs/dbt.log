@@ -142,3 +142,62 @@ https://docs.getdbt.com/docs/configure-your-profile
 [0m07:18:20.850508 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001D322B09520>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001D31EA7C650>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001D321573BC0>]}
 [0m07:18:20.851057 [debug] [MainThread]: Flushing usage events
 [0m07:18:22.235766 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m18:28:04.960136 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020D321B5B80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020D30DD07A0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020D330779B0>]}
+
+
+============================== 18:28:04.972407 | 8f32b482-fea8-4f2c-95e2-91aaecb2441d ==============================
+[0m18:28:04.972407 [info ] [MainThread]: Running with dbt=1.12.2
+[0m18:28:04.974592 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': 'C:/Users/Hoe/Desktop/Learning/Rapsodo_Interview/Rapsodo_Interview/data-dbt/rapsodo', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt debug', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'logs'}
+[0m18:28:05.048555 [info ] [MainThread]: dbt version: 1.12.2
+[0m18:28:05.050931 [info ] [MainThread]: python version: 3.12.4
+[0m18:28:05.052021 [info ] [MainThread]: python path: C:\Users\Hoe\Desktop\Learning\Rapsodo_Interview\Rapsodo_Interview\.venv\Scripts\python.exe
+[0m18:28:05.053650 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m18:28:05.186541 [info ] [MainThread]: Using profiles dir at C:/Users/Hoe/Desktop/Learning/Rapsodo_Interview/Rapsodo_Interview/data-dbt/rapsodo
+[0m18:28:05.187062 [info ] [MainThread]: Using profiles.yml file at C:/Users/Hoe/Desktop/Learning/Rapsodo_Interview/Rapsodo_Interview/data-dbt/rapsodo\profiles.yml
+[0m18:28:05.188073 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Hoe\Desktop\Learning\Rapsodo_Interview\Rapsodo_Interview\data-dbt\dbt_project.yml
+[0m18:28:05.190589 [info ] [MainThread]: adapter type: postgres
+[0m18:28:05.192155 [info ] [MainThread]: adapter version: 1.11.0
+[0m18:28:05.194025 [info ] [MainThread]: Configuration:
+[0m18:28:05.195287 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m18:28:05.195794 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m18:28:05.197311 [info ] [MainThread]: Required dependencies:
+[0m18:28:05.199326 [debug] [MainThread]: Executing "git --help"
+[0m18:28:05.255946 [debug] [MainThread]: STDOUT: "b"usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone             Clone a repository into a new directory\n   init              Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add               Add file contents to the index\n   mv                Move or rename a file, a directory, or a symlink\n   restore           Restore working tree files\n   rm                Remove files from the working tree and from the index\n   sparse-checkout   Initialize and modify the sparse-checkout\n\nexamine the history and state (see also: git help revisions)\n   bisect            Use binary search to find the commit that introduced a bug\n   diff              Show changes between commits, commit and working tree, etc\n   grep              Print lines matching a pattern\n   log               Show commit logs\n   show              Show various types of objects\n   status            Show the working tree status\n\ngrow, mark and tweak your common history\n   branch            List, create, or delete branches\n   commit            Record changes to the repository\n   merge             Join two or more development histories together\n   rebase            Reapply commits on top of another base tip\n   reset             Reset current HEAD to the specified state\n   switch            Switch branches\n   tag               Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch             Download objects and refs from another repository\n   pull              Fetch from and integrate with another repository or a local branch\n   push              Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m18:28:05.257015 [debug] [MainThread]: STDERR: "b''"
+[0m18:28:05.257541 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m18:28:05.258624 [info ] [MainThread]: Connection:
+[0m18:28:05.260422 [info ] [MainThread]:   host: localhost
+[0m18:28:05.260973 [info ] [MainThread]:   port: 5432
+[0m18:28:05.262063 [info ] [MainThread]:   user: rapsodo
+[0m18:28:05.262606 [info ] [MainThread]:   database: rapsodo_db
+[0m18:28:05.264078 [info ] [MainThread]:   schema: public
+[0m18:28:05.264690 [info ] [MainThread]:   connect_timeout: 10
+[0m18:28:05.265919 [info ] [MainThread]:   role: None
+[0m18:28:05.266464 [info ] [MainThread]:   search_path: None
+[0m18:28:05.267949 [info ] [MainThread]:   keepalives_idle: 0
+[0m18:28:05.269069 [info ] [MainThread]:   sslmode: None
+[0m18:28:05.270590 [info ] [MainThread]:   sslcert: None
+[0m18:28:05.271602 [info ] [MainThread]:   sslkey: None
+[0m18:28:05.272600 [info ] [MainThread]:   sslrootcert: None
+[0m18:28:05.273774 [info ] [MainThread]:   application_name: dbt
+[0m18:28:05.274312 [info ] [MainThread]:   autocommit: False
+[0m18:28:05.275626 [info ] [MainThread]:   retries: 1
+[0m18:28:05.277176 [info ] [MainThread]: Registered adapter: postgres=1.11.0
+[0m18:28:05.802172 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m18:28:05.904629 [debug] [MainThread]: Using postgres connection "debug"
+[0m18:28:05.905725 [debug] [MainThread]: On debug: select 1 as id
+[0m18:28:05.906267 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m18:28:05.941411 [debug] [MainThread]: SQL status: SELECT 1 in 0.035 seconds
+[0m18:28:05.944626 [debug] [MainThread]: On debug: Close
+[0m18:28:05.945162 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m18:28:05.945162 [info ] [MainThread]: [31m1 check failed:[0m
+[0m18:28:05.947183 [info ] [MainThread]: Project loading failed for the following reason:
+ project path <C:\Users\Hoe\Desktop\Learning\Rapsodo_Interview\Rapsodo_Interview\data-dbt\dbt_project.yml> not found
+
+[0m18:28:05.947183 [debug] [MainThread]: Command `dbt debug` failed at 18:28:05.947183 after 1.55 seconds
+[0m18:28:05.949199 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m18:28:05.949199 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020D321B5B80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020D32D47440>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020D32CC4E60>]}
+[0m18:28:05.951317 [debug] [MainThread]: Flushing usage events
+[0m18:28:07.521404 [debug] [MainThread]: An error was encountered while trying to flush usage events
