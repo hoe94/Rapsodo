@@ -1,12 +1,12 @@
 {{ config(
-    schema='silver_rapsodo',
+    schema='staging_rapsodo',
     materialized='table',
     incremental_strategy='delete+insert',
     sort='user_id',
     diststyle='even',
     alias='internal_subscriptions',
     on_schema_change='append_new_columns',
-    tags = ['silver_rapsodo']
+    tags = ['staging_rapsodo']
 ) 
 }}
 
@@ -14,7 +14,7 @@ WITH duplicated_internal_user_id AS (
     SELECT 
         DISTINCT user_id
         , CASE WHEN COUNT(*) OVER(PARTITION BY user_id) > 1 THEN 'Duplicate' ELSE 'Unique' END AS duplicate_internal_record
-    FROM bronze_rapsodo.internal_subscriptions
+    FROM raw_rapsodo.internal_subscriptions
 )
 SELECT 
     user_id
@@ -22,7 +22,7 @@ SELECT
     , status
     , start_date
     , end_date
-    , last_updated
+    , last_updated_timestamp
     , is_duplicated
     , dw_id
     , dw_modified_by
@@ -38,7 +38,7 @@ FROM (
 		, st.mapped_status AS status -- standardize_status
 		, base.start_date
 		, COALESCE(base.end_date, '9999-12-31') AS end_date -- fill_null_values
-		, base.last_updated
+		, base.last_updated::timestamp AT TIME ZONE 'MYT' as last_updated_timestamp -- change_column_name
         , CASE
             WHEN di.duplicate_internal_record = 'Duplicate' THEN TRUE
             WHEN di.duplicate_internal_record = 'Unique' THEN FALSE
@@ -52,7 +52,7 @@ FROM (
         , base.user_id AS dw_source_id
         , FALSE AS dw_is_deleted
 		, ROW_NUMBER() OVER (PARTITION BY base.user_id ORDER BY base.last_updated DESC) AS rn
-	FROM bronze_rapsodo.internal_subscriptions base
+	FROM raw_rapsodo.internal_subscriptions base
 	LEFT JOIN common_mapping.status_mapping st ON base.status = st.original_status -- standardize_status
     LEFT JOIN duplicated_internal_user_id di ON base.user_id = di.user_id -- detect_duplicates
 ) AS sub

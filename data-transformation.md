@@ -10,11 +10,9 @@ This guide walks you through setting up and running the dbt (data build tool) pr
 - Environment variables configured in `.env` file (in the `data-dbt/rapsodo` directory)
 - Docker Compose
 
-## Quick Start
+## Quick Start: Setup & Navigate
 
-### Step 1: Navigate to the dbt Project Directory
-
-**Always run this first before executing any dbt or make commands:**
+**Step 1: Navigate to the dbt Project Directory**
 
 ```bash
 cd data-dbt/rapsodo
@@ -22,7 +20,7 @@ cd data-dbt/rapsodo
 
 This ensures all relative paths in the dbt project are resolved correctly.
 
-### Step 2: Setup dbt
+**Step 2: Initialize dbt**
 
 Initialize the dbt project by running:
 
@@ -42,61 +40,82 @@ This command performs:
 
 Once you're in the `data-dbt/rapsodo` directory, you can run the following commands:
 
-### 1. Setup dbt
-
-```bash
-cd data-dbt/rapsodo && make setup-dbt
-```
-
-**Purpose:** Install dependencies and validate the dbt configuration
-
-**What it does:**
-- Downloads and installs dbt packages (e.g., `dbt_date`, `dbt_expectations`)
-- Tests the connection to your PostgreSQL database
-- Validates profiles and project configuration
+---
 
 ---
 
-### 2. Test Bronze Layer Sources
+### 2. Level 1 (L1) Data Quality Tests - Raw Layer
 
 ```bash
-cd data-dbt/rapsodo && make bronze-rapsodo-dbt-test
+make raw-rapsodo-dbt-l1-test
 ```
 
-**Purpose:** Run data quality tests on source tables
+**Purpose:** Run foundational data quality tests on raw source tables
+
+**What it tests:**
+The L1 DQ tests validate the integrity of source data by checking:
+
+- **Null Values:** Ensures critical fields are not null and data completeness
+- **Uniqueness:** Verifies that primary key and unique identifier fields have no duplicates
+- **List of Values Acceptance:** Validates that categorical fields contain only expected values from a predefined list
+- **Length of Value:** Checks that string fields conform to expected length constraints
 
 **What it does:**
-- Tests the `internal_subscriptions` source
-- Tests the `billing_subscriptions` source
+- Runs quality tests on the `internal_subscriptions` source
+- Runs quality tests on the `billing_subscriptions` source
 - Validates data integrity from source systems
+- Reports any data quality violations
 
 ---
 
-### 3. Build Silver Layer Models
+### 3. Build Staging Layer Models
 
 ```bash
-cd data-dbt/rapsodo && make silver-rapsodo-dbt-run
+make staging-rapsodo-dbt-run
 ```
 
-**Purpose:** Transform raw source data into clean, standardized silver layer tables
+**Purpose:** Transform raw source data into clean, standardized staging layer tables
 
 **What it does:**
-- Runs `silver__internal_subscriptions` model
-- Runs `silver__billing_subscriptions` model
+- Runs `staging__internal_subscriptions` model
+- Runs `staging__billing_subscriptions` model
 - Applies cleaning and standardization transformations
 
 ---
 
-### 4. Build Gold Layer Models
+### 4. Level 2 (L2) Data Quality Tests - Staging Layer
 
 ```bash
-cd data-dbt/rapsodo && make gold-rapsodo-dbt-run
+make staging-rapsodo-dbt-l2-test
 ```
 
-**Purpose:** Create business-ready dimensional and fact tables
+**Purpose:** Validate data relationships and consistency across staging tables
+
+**What it tests:**
+The L2 DQ tests ensure data consistency and integrity across transformed tables:
+
+- **Test subscribers existance** Verifies that both user are tally between `staging__internal_subscriptions` and `staging__billing_subscriptions` are valid
+- **Test subscribers status** Ensures all the status are the same between both tables
+- **Test time difference** Find out the timestamp difference between bill payments & subscription activation
 
 **What it does:**
-- Runs `gold__cleaned_subscriptions` model
+- Runs dbt L2 test model to detect the issues
+- Reports any data quality violations
+
+---
+
+### 5. Build Core Layer Models
+
+---
+
+```bash
+make core-rapsodo-dbt-run
+```
+
+**Purpose:** Reconcile two sources table and produce one output row per user
+
+**What it does:**
+- Runs `core__cleaned_subscriptions` model
 - Prepares data for analytics and reporting
 
 ---
@@ -112,14 +131,17 @@ cd data-dbt/rapsodo
 # 2. Setup dbt (install dependencies)
 make setup-dbt
 
-# 3. Test data sources
-make bronze-rapsodo-dbt-test
+# 3. Test raw layer data sources (L1 DQ)
+make raw-rapsodo-dbt-l1-test
 
-# 4. Build silver layer
-make silver-rapsodo-dbt-run
+# 4. Build staging layer
+make staging-rapsodo-dbt-run
 
-# 5. Build gold layer
-make gold-rapsodo-dbt-run
+# 5. Test staging layer relationships (L2 DQ)
+make staging-rapsodo-dbt-l2-test
+
+# 6. Build core layer
+make core-rapsodo-dbt-run
 ```
 
 ## Project Structure
@@ -131,9 +153,9 @@ data-dbt/rapsodo/
 ├── profiles.yml            # Database connection profiles
 ├── packages.yml            # dbt package dependencies
 ├── models/
-│   ├── bronze/             # Source data validation
-│   ├── silver/             # Cleaned and standardized data
-│   └── gold/               # Business-ready data
+│   ├── raw/                # Raw source data validation
+│   ├── staging/            # Cleaned and standardized data
+│   └── core/               # Business-ready data
 ├── macros/                 # Custom dbt macros
 ├── tests/                  # Custom tests
 ├── snapshots/              # Slowly changing dimensions
@@ -168,7 +190,7 @@ DB_SCHEMA=dbt_schema
 
 ## Next Steps
 
-After successfully running the gold layer models, your transformed data is ready for:
+After successfully running the core layer models, your transformed data is ready for:
 - Analytics queries
 - Dashboard development
 - Reporting and insights
