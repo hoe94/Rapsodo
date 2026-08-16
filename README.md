@@ -109,3 +109,12 @@ Ingested data is stored in PostgreSQL at:
 Example:
 - Sheet: "billing_subscriptions" → Table: `billing_subscriptions`
 - Sheet: "internal subscriptions" → Table: `internal_subscriptions`
+
+
+uv run dbt deps
+uv run dbt debug
+uv run dbt test --select source:internal_subscriptions
+uv run dbt test --select source:billing_subscriptions
+uv run dbt run --select=silver__internal_subscriptions.sql
+uv run dbt run --select=silver__billing_subscriptions.sql
+uv run dbt run --select=cleaned_subscriptions.sql

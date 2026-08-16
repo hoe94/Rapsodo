@@ -1,0 +1,57 @@
+version: 2
+
+sources:
+  - name: billing_subscriptions
+    database: rapsodo_db
+    schema: bronze_rapsodo
+    tables:
+      - name: billing_subscriptions
+        columns:
+          - name: customer_id
+            data_type: varchar
+            tests:
+              - not_null
+              - unique
+              - dbt_expectations.expect_column_value_lengths_to_be_between:
+                  arguments:
+                    min_value: 0
+                    max_value: 5
+
+          - name: plan_name
+            data_type: varchar
+            tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: ['Pro Annual', 'Pro Monthly', 'Trial', 'Basic Monthly']
+
+          - name: status
+            data_type: varchar
+            tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: ['active', 'past_due', 'canceled']
+
+          - name: current_period_start
+            data_type: varchar
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_value_lengths_to_be_between:
+                  arguments:
+                    min_value: 0
+                    max_value: 19
+
+          - name: current_period_end
+            data_type: varchar
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_value_lengths_to_be_between:
+                  arguments:
+                    min_value: 0
+                    max_value: 19
+
+          - name: canceled_at
+            data_type: varchar
+            tests:
+              - not_null
