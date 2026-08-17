@@ -42,7 +42,7 @@ DB_SCHEMA=raw_rapsodo
 - `DB_PASSWORD`: Database password
 - `DB_SCHEMA`: Target schema name
 
-### 2. Navigate to the dbt Project Directory**
+### 2. Navigate to the dbt Project Directory
 
 ```bash
 cd data-ingestion
