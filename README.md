@@ -6,19 +6,22 @@ This project focuses on the business problem:
 
 ## Project summary
 
-This project follows an ELT framework for data ingestion. First, I extract the subscription data from the provided Excel workbook and save the relevant sheets as CSV files. Those CSV files are then ingested into PostgreSQL at the raw layer, preserving the original source structure so the data can be validated and audited without losing traceability. For step-by-step instructions on executing the ingestion pipeline, refer to [data_ingestion.md](data_ingestion.md).
+This project follows an ELT frameworkrmamework for data ingestion. First, I extract the subscription data from the provided Excel workbook and save the relevant sheets as CSV files. Those CSV files are then ingested into PostgreSQL at the raw layer, preserving the original source structure so the data can be validated and audited without losing traceability. For step-by-step instructions on executing the ingestion pipeline, refer to [data_ingestion.md](data_ingestion.md).
 
-After loading the raw data, I created dbt Level 1 tests to detect data quality issues, such as null values, duplicate records (uniqueness), and values outside the allowed accepted list. Any data quality issues found during this stage are documented in
-[Data quality findings](#data-quality-findings), along with notes on what was corrected and where the logic lives in the dbt models.
+After loading the raw data, I apply dbt Level 1 checks to detect common data quality issues, including null values, duplicate records, and values outside the expected accepted lists. Any issues identified in this stage are summarized in [Data quality findings](#data-quality-findings), along with the cleanup logic and the relevant dbt model references.
 
-Finally, I reconcile the two source systems in the core layer to create a trusted source-of-truth view of each subscription. The reconciliation process compares the internal and billing datasets, flags mismatches and duplicates, and produces a unified  dataset that is suitable for downstream analysis and reporting. For more details please refer [Reconciliation](#Reconciliation)
+I then transform and clean the raw-layer data by standardizing column names, handling nulls and duplicates, and creating mapping tables to align values across both source tables. For the dbt pipeline and transformation workflow, refer to [data_transformation.md](data_transformation.md).
 
-For step-by-step instructions on executing the dbt project, refer to [data_transformation.md](data_transformation.md).
+Next, I reconcile the internal and billing datasets in the core layer to establish a trusted source-of-truth view of each subscription. The reconciliation process compares both sources, flags mismatches and duplicates, and produces a unified dataset suitable for downstream reporting and analysis. For more details, see [Reconciliation](#Reconciliation).
+
+Finally, I categorize subscribers by the data quality issues they experience, recognizing that a single subscriber can be associated with multiple issues at the same time. See [User categorization](#User-Categorization) for the summary.
 
 ## Project navigation
 - Data quality summary and coding notes: [Docs/Load_and_Clean_datasets_finding_coding.csv](Docs/Load_and_Clean_datasets_finding_coding.csv)
 - Data ingestion steps: [data_ingestion.md](data_ingestion.md)
-- Data transformation and dbt workflow: [data-transformation.md](data-transformation.md)
+- Data transformation and DBT workflow: [data-transformation.md](data-transformation.md)
+- Reconciliation: [Reconciliation](#Reconciliation) [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
+- User categoriazation: [User categorization](#User-Categorization) [Docs/DQ_Issues_Categorization.csv](Docs/DQ_Issues_Categorization.csv)
 
 
 ## Data quality findings
@@ -57,10 +60,60 @@ Key Findings:
 
 Full breakdown and findings are documented here: [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
 
+## User Categorization
+
+#### Problem statement
+>Summarize your findings: how many users fall into each category, and which category represents the biggest data quality risk in your view.
+
+#### Findings: 
+
+| category | dq_issue | dq_issue_risk_level | count
+| --- | --- | --- | --- |
+p1|status_mismatch|major_business_impact|103
+p1|timestamp_difference|major_business_impact|98
+p1|missing_in_billing|major_business_impact|10
+p1|missing_in_internal|major_business_impact|8
+p2|null_values_in_internal|minor_internal_impact|109
+p2|null_values_in_billing|minor_business_impact|99
+p2|duplicate_in_internal|major_internal_impact|8
+p3|plan_values_misaligned|minor_internal_impact|143
+p3|status_values_misaligned|minor_internal_impact|58
+
+```bash
+SELECT 
+	category
+	, dq_issue
+	, dq_issue_risk_level
+	, count(*)
+FROM core_rapsodo.user_dq_issues_categorization
+GROUP by category, dq_issue, dq_issue_risk_level
+ORDER by category asc, count desc
+```
+
+#### Explanation:
+
+P3 Category (Minor Operational Risk):
+P3 issues affect all 143 subscribers for plan_values_misaligned and 58 subscribers for status_values_misaligned. These have minimal business risk and can be fully resolved in the transformation layer by creating standard dbt mapping models to standardized the values.
+
+P2 Category (Internal System & Hygiene Risk):
+P2 issues are dominated by null values in key timestamps. 109 subscribers in internal_subscriptions (last_updated_at) and 99 in billing_subscriptions (canceled_at). This leaves business users without clear visibility into subscription end or cancellation dates. Additionally, 8 duplicate subscribers exist in the internal system, which can be deduplicated using downstream dbt window functions (ROW_NUMBER()) and fix the root cause internally.
+
+P1 Category (Highest Data Quality Risk):
+P1 represents the biggest data quality risk overall. Note that the total P1 count (219 issue occurrences) exceeds the subscriber base because a single user can experience multiple P1 issues simultaneously (e.g., a subscriber having both a status_mismatch and a timestamp_difference). For example, subscriber, U1003 have 2 P1 issues `status_mismatch` & `timestamp_difference` at the same time.
+- status_mismatch (103 records) and timestamp_difference (98 records) form the vast majority of P1 failures, causing severe state desynchronization between systems.
+- 10 subscribers are missing from the billing system (unbilled access leading to potential revenue leakage).
+- 8 paying subscribers are missing internally (service lockout risking customer churn and brand damage).
+
+#### Full list of data: [Docs/Users_Categorization.csv](Docs/Users_Categorization.csv)
+
+
+
 ## Recommended workflow
 
 1. Review the DQ findings file in [Docs/Load_and_Clean_datasets_finding_coding.csv](Docs/Load_and_Clean_datasets_finding_coding.csv)
 2. Follow the ingestion steps in [data_ingestion.md](data_ingestion.md)
-3. Run the transformation pipeline in [data-transformation.md](data-transformation.md)
+3. Run the dbt pipeline in [data-transformation.md](data-transformation.md)
+4. Access the Reconciliation file : [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
+5. View the User categoriazation: [Docs/DQ_Issues_Categorization.csv](Docs/DQ_Issues_Categorization.csv)
 
 
