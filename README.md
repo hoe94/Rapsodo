@@ -13,18 +13,17 @@ This project focuses on the business problem:
 This project satrt by implements an ELT pipeline to ingest subscription data from an Excel workbook into PostgreSQL, then validates, transforms, and reconciles it across dbt layers (raw, staging, core). The workflow includes data quality checks (L1 for raw data, L2 for cross-system relationships), transformation to standardized formats. Next, I reconcile the internal and billing datasets into trusted source-of-truth of each subscription, and categorization of subscribers by data quality issues. Detailed findings are documented in the sections below.
 
 #### Reference:
-[data_ingestion.md](data_ingestion.md)
 - DBT L1 Test: [raw_layer_L1_Test](data-dbt/rapsodo/models/raw/validation)
 - DBT Staging Layer: [staging_layer](data-dbt/rapsodo/models/staging/)
 - DBT L2 Test: [staging_layer_L2_Test](data-dbt/rapsodo/tests/staging)
 - DBT Core Layer: [core_layer](data-dbt/rapsodo/models/core/core__cleaned_subscriptions.sql)
 
-
+---
 
 ## Project navigation
-- Data quality summary and coding notes: [Docs/Load_and_Clean_datasets_finding_coding.csv](Docs/Load_and_Clean_datasets_finding_coding.csv)
 - Data ingestion: [data_ingestion.md](data_ingestion.md)
 - Data transformation: [data-transformation.md](data_transformation.md)
+- Data quality summary and coding notes: [Docs/Load_and_Clean_datasets_finding_coding.csv](Docs/Load_and_Clean_datasets_finding_coding.csv)
 - Reconciliation: [Reconciliation](#Reconciliation) -> [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
 - User categoriazation: [User categorization](#User-Categorization) ->  [Docs/Users_Categorization.csv](Docs/Users_Categorization.csv)
 
