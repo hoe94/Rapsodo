@@ -9,12 +9,12 @@ This project focuses on the business problem:
 This project follows an ELT frameworkrmamework for data ingestion. First, I extract the subscription data from the provided Excel workbook and save the relevant sheets as CSV files. Those CSV files are then ingested into PostgreSQL at the raw layer, preserving the original source structure so the data can be validated and audited without losing traceability. For step-by-step instructions on executing the ingestion pipeline, refer to [data_ingestion.md](data_ingestion.md).
 
 After loading the raw data, I apply dbt Level 1 Test to detect common data quality issues, including null values, duplicate records, and values outside the expected accepted lists. Any issues identified in this stage are summarized in [Data quality findings](#data-quality-findings), along with the cleanup logic and the relevant dbt model references.
-- DBT L1 Test: [raw_layer_L1_Test](data-dbt/rapsodo/models/raw/)
+- DBT L1 Test: [raw_layer_L1_Test](data-dbt/rapsodo/models/raw/validation)
 - DBT Staging Layer: [staging_layer](data-dbt/rapsodo/models/staging/)
-- DBT L2 Test: [staging_layer_L2_Test](data-dbt/rapsodo/models/tests/staging)
+- DBT L2 Test: [staging_layer_L2_Test](data-dbt/rapsodo/tests/staging)
 
 I then transform and clean the raw-layer data by standardizing column names, handling nulls and duplicates, and creating mapping tables to align values across both source tables. For the dbt pipeline and transformation workflow, refer to [data_transformation.md](data_transformation.md).
-- DBT Core Layer: [core_layer](data-dbt/rapsodo/models/core/)
+- DBT Core Layer: [core_layer](data-dbt/rapsodo/models/core/core__cleaned_subscriptions.sql)
 
 Next, I reconcile the internal and billing datasets in the core layer to establish a trusted source-of-truth view of each subscription. The reconciliation process compares both sources, flags mismatches and duplicates, and produces a unified dataset suitable for downstream reporting and analysis. For more details, see [Reconciliation](#Reconciliation).
 
@@ -42,6 +42,8 @@ The issues covered include:
 - plan and status normalization
 - duplicate detection and data quality classification
 
+#### DBT Test scripts: [raw_layer_L1_Test](data-dbt/rapsodo/models/raw/validation)
+
 ## Reconciliation
 
 #### Problem Statement:
@@ -63,6 +65,9 @@ Key Findings:
 - 18 subscriptions exhibited compound delays (both late payment and delayed activation).
 
 Full breakdown and findings are documented here: [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
+
+#### DBT Models: [core_layer](data-dbt/rapsodo/models/core/core__cleaned_subscriptions.sql)
+
 
 ## User Categorization
 
@@ -110,6 +115,7 @@ P1 represents the biggest data quality risk overall. Note that the total P1 coun
 
 #### Full list of data: [Docs/Users_Categorization.csv](Docs/Users_Categorization.csv)
 
+#### DBT Model: [core_layer](data-dbt/rapsodo/models/core/core__user_dq_issue_categorization.sql)
 
 
 ## Recommended workflow
