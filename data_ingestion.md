@@ -42,12 +42,18 @@ DB_SCHEMA=
 
 ## Setup
 
-### 1. Setup Database
+### 1. Navigate to the dbt Project Directory**
+
+```bash
+cd data-ingestion
+```
+
+### 2. Setup Database
 
 Run the database setup script:
 
 ```bash
-cd data-ingestion && make setup-db
+make setup-db
 ```
 
 Or manually run:
@@ -56,7 +62,7 @@ Or manually run:
 bash scripts/start-db.sh
 ```
 
-### 2. Install Dependencies
+### 3. Install Dependencies
 
 ```bash
 pip install -r scripts/requirements.txt
@@ -68,7 +74,7 @@ Or using uv:
 uv sync
 ```
 
-## Running the Ingestion
+## 4. Running the Ingestion
 
 Execute the ingestion pipeline:
 
