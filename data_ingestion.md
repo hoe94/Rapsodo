@@ -10,22 +10,24 @@ Ingestion pipeline that extracts data from Excel sheets transform into CSV file,
 - Environment variables configured (see below)
 - Docker Compose
 
-## Environment Variables
+## Setup
+
+## 1. Environment Variables
 
 Create a `.env` file in the project root with the following variables:
 
 ```bash
-# Excel Configuration
-EXCEL_FILE_PATH=
-CSV_FILE_PATH=
+# Excel Configuration (Example)
+EXCEL_FILE_PATH=Rapsodo_Interview/data-ingestion/Subscription_Reconciliation_Data.xlsx
+CSV_FILE_PATH=Rapsodo_Interview/Rapsodo_Interview/CSV
 
-# Database Configuration
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-DB_SCHEMA=
+# Database Configuration (Must follow this)
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=rapsodo_db
+DB_USER=rapsodo
+DB_PASSWORD=rapsodo_password
+DB_SCHEMA=raw_rapsodo
 ```
 
 **Required Variables:**
@@ -40,15 +42,13 @@ DB_SCHEMA=
 - `DB_PASSWORD`: Database password
 - `DB_SCHEMA`: Target schema name
 
-## Setup
-
-### 1. Navigate to the dbt Project Directory**
+### 2. Navigate to the dbt Project Directory**
 
 ```bash
 cd data-ingestion
 ```
 
-### 2. Setup Database
+### 3. Setup Database
 
 Run the database setup script:
 
@@ -62,7 +62,7 @@ Or manually run:
 bash scripts/start-db.sh
 ```
 
-### 3. Install Dependencies
+### 4. Install Dependencies
 
 ```bash
 pip install -r scripts/requirements.txt
@@ -74,7 +74,7 @@ Or using uv:
 uv sync
 ```
 
-## 4. Running the Ingestion
+## 5. Running the Ingestion
 
 Execute the ingestion pipeline:
 
@@ -115,4 +115,30 @@ Ingested data is stored in PostgreSQL at:
 Example:
 - Sheet: "billing_subscriptions" → Table: `raw_rapsodo.billing_subscriptions`
 - Sheet: "internal subscriptions" → Table: `raw_rapsodo.internal_subscriptions`
+
+## Troubleshooting
+
+### Issue: "FileNotFoundError: [Errno 2] No such file or directory"
+**Solution:** Ensure the `.env` file is created in the project root directory with all required variables. Check that file paths in `EXCEL_FILE_PATH` and `CSV_FILE_PATH` are correct and accessible.
+
+### Issue: "Database connection failed" or "could not connect to server"
+**Solution:** Verify that PostgreSQL is running and the credentials in `.env` are correct:
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` must match your PostgreSQL configuration
+- Run `make setup-db` to initialize the database connection
+
+### Issue: "Missing environment variables"
+**Solution:** Ensure all required variables are present in the `.env` file:
+- `EXCEL_FILE_PATH`: Path to the Excel file
+- `CSV_FILE_PATH`: Directory for CSV output
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SCHEMA`
+- Reload the terminal or restart your IDE after adding the `.env` file
+
+### Issue: "Permission denied" when accessing CSV_FILE_PATH
+**Solution:** Ensure the directory specified in `CSV_FILE_PATH` has write permissions. Create the directory if it doesn't exist:
+```bash
+mkdir -p "path/to/CSV/directory"
+```
+
+### Issue: "Excel file format not recognized"
+**Solution:** Verify the Excel file path in `EXCEL_FILE_PATH` points to a valid `.xlsx` file and the file is not corrupted or in use by another application.
 
