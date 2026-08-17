@@ -1,0 +1,115 @@
+No,Category,Data Quality (DQ) Issue,Technical Impact,Business Impact,Suggestion,DQ Metric,Impact
+1,P1,There are 10 subscribers data are missing in billing_subscriptions,"This is caused by a few potential issues:
+
+1. Provider outages incident
+
+2. Sync Delays
+
+3. Provider didnt provide backfilled data after incident. ","1. 4 active Pro Monthly subscribers were never charged.
+2. 6 subscribers on trial plans were charged incorrectly.
+
+This may result in revenue loss or compliance issues for the company.","1. Create a dbt level 2 (L2) test to verify subscribers existence across both systems 
+and detect discrepancies early.
+
+2. Escalated the issue to the provider to request backfilled data 
+and a root-cause fix.",missing_in_billing,major_business_impact
+2,P1,There are 8 subscribers data are missing in internal_subscriptions,"This is a critical data loss issue because these subscribers were charged, but the internal system failed to record their subscriptions.","1. 4 active Pro Annual subscribers do not exist in the internal system.
+
+2. 3 active Pro Monthly subscribers do not exist in the internal system.
+
+3. 1 active Basic Monthly subscriber does not exist in the internal system.
+
+In total, 8 subscribers (5.59% of 143) do not exist in internal records.
+This could damage customer trust and harm company reputation if affected users lose access to paid features.","1. Create a dbt level 2 (L2) test  to verify subscribers existence across both systems 
+and detect discrepancies early.
+
+2. Backfilled the affected subscribers data and perfom the root-cause fix.",missing_in_internal,major_business_impact
+3,P1,"Status Mismatch
+
+Table: Internal->Billing
+Column: status <> status
+Value:
+1. Active:Canceled
+2. Canceled:Past_due
+3. Trial:Active
+","1. Internal system failed to capture webhook events
+or API updates and cause dift out of sync
+
+2. Downstream usage affected. (BI Dashboard, 
+Reporting, AI/ML use case)
+","1. Uncaptured Billing Updates: The internal system failed to capture billing updates, leaving system records out of sync (6 subscribers affected).
+
+2. State Mismatch (canceled vs past_due): Subscriptions were marked as canceled internally, but the payment provider still shows past_due (6 subscribers affected).
+
+3. Trial-to-Active Transition Failure: The internal system failed to promote status from trial to active after successful payment confirmation (28 subscribers affected).
+
+Creates a poor customer experience through unexpected charges or feature lockouts, affect customer trust and increasing support escalations.","1. Create a dbt level 2 (L2) test  to verify subscribers status across both systems 
+and detect discrepancies early.
+
+2. Propose working with the provider on a permanent solution:
+a. Create an API endpoint for two-way synchronization to fetch the latest status from the payment provider based on required timestamp.
+b. Establish a clear SLA/agreement with the provider to standardize status definitions.",status_mismatch,major_business_impact
+4,P1,"Timestamp discrepancy between subscription activation
+ and payment processing","I set a 2-hour threshold for timestamp discrepancies to account for standard batch sync intervals and provider retry delays, regardless of whether activation occurs on the same day or across days.
+
+
+This delay can be caused by several factors:
+1. Webhook & API Failures: System failed to capture incoming webhook events or API updates.
+2. System Infrastructure Delays: Heavy system load and high resource utilization delayed processing pipelines.","1. 60 subscriptions (41.96% of 143) were activated within 2 hours of payment (including both same-day activations and late payments).
+
+2. 47 subscriptions (32.87% of 143) were activated more than 2 hours after payment.
+
+3. 18 subscriptions (12.59% of 143) experienced both delayed activation and late payments.
+
+Creates a poor user experience due to delayed activation, leading users to cancel their plans.","1. Create a dbt level 2 (L2) test  to detect and alert on timestamp discrepancies.
+
+2. Add 3 new columns to model activation timing:
+
+    a. start_date_diff: Calculates the timestamp difference between payment and activation.
+
+    b. activation_speed: Categorizes the activation sequence:
+
+        i. same_day_activate: Payment and activation occur on the same date.
+        ii. cross_day_activate: Subscription is activated the day after payment is completed.
+        iii. late_payment: Payment occurs after the subscription is already activated.
+
+    c. activation_timeliness: Evaluates the delay against the 2-hour SLA window:
+
+        i. reasonable_timeline: Time difference is within the 2-hour threshold.
+        ii. late_activation: Time difference exceeds the 2-hour threshold.
+
+3. Propose collaborating with the payment provider on a permanent solution while improving internal system ingestion.",timestamp_difference,major_business_impact
+5,P2,Duplicated user in internal_subscriptions,"It might due to legacy double-write bug and cause the issue
+Internal table seems like a SCD Type 1 tables (overwrite mode) But some records becomes SCD Type 2 tables for these record (append)","1. 8 subscribers (5,.5% of 143) were duplicated records
+
+Business user cant capture the latest subscription status
+and lead to the poor business decision","1. Escalate the issue to the upstream software engineering team to fix the double-write bug.
+2. Create a dbt level 1 (L1) test  to enforce and monitor user uniqueness.
+3. Deduplicate downstream tables by selecting only the latest record
+ (last_updated_at).","duplicate_in_billing
+duplicate_in_internal
+",major_business_impact
+6,P2,"Identified null values while checking the data quality issues
+
+Table internal_subscriptions: end_date contains null values.
+
+Table billing_subscriptions: canceled_at contains null values.",It trigger the data quality issue,Business user had no idea when does the user end the subscription plan or cancel the plan,"1. Create a dbt level 1 (L1) test to monitor the null value
+2. Fill back with specific value to indicate null value in staging layer
+
+Date with exist records: 9999-12-31
+Date with non exist records: 0000-01-01
+Timestamp with exist records: 9999-12-31 00:00:00
+Timestamp with non exist records: 0001-01-01 08:00:00
+String: -
+calculate timestamp diff: 00:00:00","null_values_in_internal
+null_values_in_billing
+","minor_internal_impact
+minor_internal_impact"
+7,P2,"Column names are misaligned
+
+Table: Internal->billing
+User_id <> customer_id
+plan <> plan_name",Blocks data engineers from cleanly joining tables and building a unified single source of truth.,Confuses business users due to conflicting field definitions across internal and billing dashboards.,"1. I use internal column as baseline to convert the billing column name
+2. Proposed the standardize column name & create the data contract to enforce both parties to follow",column_names_misaligned,minor_business_impact
+8,P3,Subscription Plan value is not aligned,It trigger the data quality issue,Confuses business users due to conflicting field definitions across internal and billing dashboards.,Create mapping table to standardize value for both tables,plan_values_misaligned,minor_internal_impact
+9,P3,Subscription Status value is not aligned,It trigger the data quality issue,Confuses business users due to conflicting field definitions across internal and billing dashboards.,Create mapping table to standardize value for both tables,status_values_misaligned,minor_business_impact
