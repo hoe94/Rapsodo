@@ -1,6 +1,6 @@
 # Data Ingestion
 
-Fast Excel Ingestion Script that extracts data from Excel sheets, transforms it, and ingests it into PostgreSQL.
+Ingestion pipeline that extracts data from Excel sheets transform into CSV file, and ingests it into PostgreSQL.
 
 ## Prerequisites
 
@@ -73,7 +73,7 @@ uv sync
 Execute the ingestion pipeline:
 
 ```bash
-cd data-ingestion && make ingestion
+make ingestion
 ```
 
 Or run directly:
@@ -107,6 +107,6 @@ Ingested data is stored in PostgreSQL at:
 ```
 
 Example:
-- Sheet: "billing_subscriptions" → Table: `billing_subscriptions`
-- Sheet: "internal subscriptions" → Table: `internal_subscriptions`
+- Sheet: "billing_subscriptions" → Table: `raw_rapsodo.billing_subscriptions`
+- Sheet: "internal subscriptions" → Table: `raw_rapsodo.internal_subscriptions`
 
