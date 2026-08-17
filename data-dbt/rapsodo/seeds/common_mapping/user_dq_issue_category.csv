@@ -1,0 +1,12 @@
+category,dq_issue,dq_issue_risk_level,associated_columns
+p1,missing_in_billing,major_business_impact,missing_in_billing
+p1,missing_in_internal,major_business_impact,missing_in_internal
+p1,status_mismatch,major_business_impact,mismatched_status
+p1,timestamp_difference,major_business_impact,activation_speed__activation_timeliness
+p1,duplicate_in_billing,major_business_impact,duplicate_billing_record
+p2,duplicate_in_internal,major_internal_impact,duplicate_internal_record
+p2,null_values_in_internal,minor_internal_impact,-
+p2,null_values_in_billing,minor_business_impact,-
+p2,column_names_misaligned,minor_business_impact,-
+p3,plan_values_misaligned,minor_internal_impact,-
+p3,status_values_misaligned,minor_internal_impact,-

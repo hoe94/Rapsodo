@@ -36,15 +36,45 @@ This command performs:
 - All dependencies installed successfully
 - Connection to PostgreSQL database confirmed
 
+**Step 3: Load Common Mapping Reference Tables**
+
+Before running the staging models, load the lookup tables used by the transformation logic:
+
+```bash
+make common-mapping-rapsodo-seed
+```
+
+This command runs:
+- `uv run dbt seed --select plan_mapping status_mapping user_dq_issue_category`
+
+It creates and loads the `common_mapping` tables used for:
+- plan standardization (`plan_mapping`)
+- status standardization (`status_mapping`)
+- DQ issue categorization (`user_dq_issue_category`)
+
 ## Available Make Commands
 
 Once you're in the `data-dbt/rapsodo` directory, you can run the following commands:
 
 ---
 
+### 2. Load Common Mapping Lookup Tables
+
+```bash
+make common-mapping-rapsodo-seed
+```
+
+**Purpose:** Create and populate the reference tables used by the dbt models for status/plan normalization and DQ tracking.
+
+**What it does:**
+- Creates the `common_mapping` schema if needed
+- Loads `plan_mapping`
+- Loads `status_mapping`
+- Loads `user_dq_issue_category`
+
 ---
 
-### 2. Level 1 (L1) Data Quality Tests - Raw Layer
+### 3. Level 1 (L1) Data Quality Tests - Raw Layer
 
 ```bash
 make raw-rapsodo-dbt-l1-test
@@ -68,7 +98,7 @@ The L1 DQ tests validate the integrity of source data by checking:
 
 ---
 
-### 3. Build Staging Layer Models
+### 4. Build Staging Layer Models
 
 ```bash
 make staging-rapsodo-dbt-run
@@ -83,7 +113,7 @@ make staging-rapsodo-dbt-run
 
 ---
 
-### 4. Level 2 (L2) Data Quality Tests - Staging Layer
+### 5. Level 2 (L2) Data Quality Tests - Staging Layer
 
 ```bash
 make staging-rapsodo-dbt-l2-test
@@ -104,7 +134,7 @@ The L2 DQ tests ensure data consistency and integrity across transformed tables:
 
 ---
 
-### 5. Build Core Layer Models
+### 6. Build Core Layer Models
 
 ---
 
@@ -131,16 +161,19 @@ cd data-dbt/rapsodo
 # 2. Setup dbt (install dependencies)
 make setup-dbt
 
-# 3. Test raw layer data sources (L1 DQ)
+# 3. Load common mapping reference tables
+make common-mapping-rapsodo-seed
+
+# 4. Test raw layer data sources (L1 DQ)
 make raw-rapsodo-dbt-l1-test
 
-# 4. Build staging layer
+# 5. Build staging layer
 make staging-rapsodo-dbt-run
 
-# 5. Test staging layer relationships (L2 DQ)
+# 6. Test staging layer relationships (L2 DQ)
 make staging-rapsodo-dbt-l2-test
 
-# 6. Build core layer
+# 7. Build core layer
 make core-rapsodo-dbt-run
 ```
 

@@ -1,0 +1,5 @@
+original_status,mapped_status
+active,ACTIVE
+trial,TRIAL
+canceled,CANCELED
+past_due,PAST_DUE

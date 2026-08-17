@@ -1,0 +1,28 @@
+version: 2
+
+seeds:
+  - name: plan_mapping
+    config:
+      schema: common_mapping
+      alias: plan_mapping
+      column_types:
+        billing_plan: varchar
+        internal_plan: varchar
+
+  - name: status_mapping
+    config:
+      schema: common_mapping
+      alias: status_mapping
+      column_types:
+        original_status: varchar
+        mapped_status: varchar
+
+  - name: user_dq_issue_category
+    config:
+      schema: common_mapping
+      alias: user_dq_issue_category
+      column_types:
+        category: varchar
+        dq_issue: varchar
+        dq_issue_risk_level: varchar
+        associated_columns: varchar

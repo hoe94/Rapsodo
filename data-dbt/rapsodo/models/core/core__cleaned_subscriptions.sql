@@ -70,8 +70,8 @@ SELECT
 	END AS is_canceled_subscription
 	, COALESCE(internal.start_date, '0001-01-01') AS interal_start_date
 	, COALESCE(internal.end_date, '0001-01-01') AS internal_end_date
-	, COALESCE(billing.current_period_start_timestamp, '0001-01-01') AS billing_current_period_start_timestamp
-	, COALESCE(billing.current_period_end_timestamp, '0001-01-01') AS billing_current_period_end_timestamp
+	, COALESCE(billing.current_period_start_timestamp, '0001-01-01 00:00:00') AS billing_current_period_start_timestamp
+	, COALESCE(billing.current_period_end_timestamp, '0001-01-01 00:00:00') AS billing_current_period_end_timestamp
 	, COALESCE(internal.last_updated_timestamp, '0001-01-01 00:00:00') AS internal_last_updated_timestamp
 	, COALESCE(billing.canceled_at_timestamp, '0001-01-01 00:00:00') AS billing_canceled_at_timestamp
 	, COALESCE(td.start_date_diff, INTERVAL '0 seconds') AS start_date_diff
