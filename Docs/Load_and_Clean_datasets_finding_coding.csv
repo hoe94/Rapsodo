@@ -1,12 +1,10 @@
 No,Table,Columns,DQ Issue,Solution,Action,DBT File Path,No,Table,Columns,DQ Issue,Solution,Action,DBT File Path
-1,internal_subscriptions,"user_id
-plan
+1,internal_subscriptions,"user_id, plan
 ",Columns Name are not sync,"Using internal_subscriptions
 columns name
 as baseline
 to standardize the column names
-",,data-dbt/rapsodo/models/staging/staging__internal_subscriptions.sql,1,billing_subscriptions,"customer_id
-plan_name
+",,data-dbt/rapsodo/models/staging/staging__internal_subscriptions.sql,1,billing_subscriptions,"customer_id, plan_name
 ",Columns Name are not sync,"Follow internal_subscriptions 
 columns name 
 to rename the column for
