@@ -33,6 +33,7 @@ Finally, I categorize subscribers by the data quality issues they experience, re
 - Reconciliation: [Reconciliation](#Reconciliation) -> [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
 - User categoriazation: [User categorization](#User-Categorization) ->  [Docs/Users_Categorization.csv](Docs/Users_Categorization.csv)
 
+---
 
 ## Data quality findings
 
