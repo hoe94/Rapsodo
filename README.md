@@ -6,26 +6,27 @@ This project focuses on the business problem:
 
 ## Project summary
 
-This project follows an ELT frameworkrmamework for data ingestion. First, I extract the subscription data from the provided Excel workbook and save the relevant sheets as CSV files. Those CSV files are then ingested into PostgreSQL at the raw layer, preserving the original source structure so the data can be validated and audited without losing traceability. For step-by-step instructions on executing the ingestion pipeline, refer to [data_ingestion.md](data_ingestion.md).
+This project mainly focus on data ingestion, data transformation and working on Data quality issues. For the data ingestion, I follows the ELT framework. I extracted the subscription data from the provided Excel workbook and save the relevant sheets as CSV files. Those CSV files are ingested into PostgreSQL at the raw layer, preserving the original source structure so the data can be validated and audited without losing traceability. \
+For step-by-step instructions on executing the ingestion pipeline, refer to [data_ingestion.md](data_ingestion.md).
 
-After loading the raw data, I apply dbt Level 1 Test to detect common data quality issues, including null values, duplicate records, and values outside the expected accepted lists. Any issues identified in this stage are summarized in [Data quality findings](#data-quality-findings), along with the cleanup logic and the relevant dbt model references.
-- DBT L1 Test: [raw_layer_L1_Test](data-dbt/rapsodo/models/raw/validation)
+After loading the raw data, I created the DBT Level 1 (L1) test script to detect common data quality issues, including null values, duplicate records, and values outside the expected accepted lists. Any issues identified in this stage are summarized in [Data quality findings](#data-quality-findings), along with the cleanup logic and the relevant dbt model references.
+- DBT L1 Test: [raw_layer_L1_Test](data-dbt/rapsodo/models/raw/validation) \
+
+I transform and clean the raw-layer data by standardizing column names, handling nulls and duplicates, and creating mapping tables to align values across both source tables. For the dbt pipeline and transformation workflow, At the same time, I created the DBT Level 2 (L2) test script to cross check the relationship between internal and billing datasets. For more info, please refer to [data_transformation.md](data_transformation.md). \
 - DBT Staging Layer: [staging_layer](data-dbt/rapsodo/models/staging/)
 - DBT L2 Test: [staging_layer_L2_Test](data-dbt/rapsodo/tests/staging)
 
-I then transform and clean the raw-layer data by standardizing column names, handling nulls and duplicates, and creating mapping tables to align values across both source tables. For the dbt pipeline and transformation workflow, refer to [data_transformation.md](data_transformation.md).
+Next, I reconcile the internal and billing datasets in the core layer to establish a trusted source-of-truth view of each subscription. The reconciliation process compares both sources, flags mismatches and duplicates, and produces a unified dataset suitable for downstream reporting and analysis. For more details, see [Reconciliation](#Reconciliation). \
 - DBT Core Layer: [core_layer](data-dbt/rapsodo/models/core/core__cleaned_subscriptions.sql)
 
-Next, I reconcile the internal and billing datasets in the core layer to establish a trusted source-of-truth view of each subscription. The reconciliation process compares both sources, flags mismatches and duplicates, and produces a unified dataset suitable for downstream reporting and analysis. For more details, see [Reconciliation](#Reconciliation).
-
-Finally, I categorize subscribers by the data quality issues they experience, recognizing that a single subscriber can be associated with multiple issues at the same time. See [User categorization](#User-Categorization) for the summary.
+Finally, I categorize subscribers by the data quality issues they experience, recognizing that a single subscriber can be associated with multiple issues at the same time. See [User categorization](#User-Categorization) for the summary. \
 
 ## Project navigation
 - Data quality summary and coding notes: [Docs/Load_and_Clean_datasets_finding_coding.csv](Docs/Load_and_Clean_datasets_finding_coding.csv)
 - Data ingestion steps: [data_ingestion.md](data_ingestion.md)
-- Data transformation and DBT workflow: [data-transformation.md](data-transformation.md)
-- Reconciliation: [Reconciliation](#Reconciliation) [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
-- User categoriazation: [User categorization](#User-Categorization) [Docs/DQ_Issues_Categorization.csv](Docs/DQ_Issues_Categorization.csv)
+- Data transformation and DBT workflow: [data-transformation.md](data_transformation.md)
+- Reconciliation: [Reconciliation](#Reconciliation) -> [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
+- User categoriazation: [User categorization](#User-Categorization) ->  [Docs/DQ_Issues_Categorization.csv](Docs/DQ_Issues_Categorization.csv)
 
 
 ## Data quality findings
@@ -67,7 +68,6 @@ Key Findings:
 Full breakdown and findings are documented here: [Docs/Reconciliation.csv](Docs/Reconciliation.csv)
 
 #### DBT Models: [core_layer](data-dbt/rapsodo/models/core/core__cleaned_subscriptions.sql)
-
 
 ## User Categorization
 
