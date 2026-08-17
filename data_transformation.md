@@ -20,7 +20,21 @@ cd data-dbt/rapsodo
 
 This ensures all relative paths in the dbt project are resolved correctly.
 
-**Step 2: Initialize dbt**
+**Step 2: Create Environment Variable**
+
+Create a `.env` file in the project root with the following variables:
+
+```bash
+# Database Configuration (Must follow this)
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=rapsodo_db
+DB_USER=rapsodo
+DB_PASSWORD=rapsodo_password
+DB_SCHEMA=raw_rapsodo
+```
+
+**Step 3: Initialize dbt**
 
 Initialize the dbt project by running the make command:
 
@@ -36,7 +50,7 @@ This command performs:
 - All dependencies installed successfully
 - Connection to PostgreSQL database confirmed
 
-**Step 3: Load Common Mapping Reference Tables**
+**Step 4: Load Common Mapping Reference Tables**
 
 Before running the staging models, load the lookup tables used by the transformation logic by running the make command:
 
