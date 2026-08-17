@@ -9,8 +9,7 @@ This project focuses on the business problem:
 This project follows an ELT framework for data ingestion. First, I extract the subscription data from the provided Excel workbook and save the relevant sheets as CSV files. Those CSV files are then ingested into PostgreSQL at the raw layer, preserving the original source structure so the data can be validated and audited without losing traceability. For step-by-step instructions on executing the ingestion pipeline, refer to [data_ingestion.md](data_ingestion.md).
 
 After loading the raw data, I created dbt Level 1 tests to detect data quality issues, such as null values, duplicate records (uniqueness), and values outside the allowed accepted list. Any data quality issues found during this stage are documented in
-- [Data quality findings](#data-quality-findings)
-, along with notes on what was corrected and where the logic lives in the dbt models.
+[Data quality findings](#data-quality-findings), along with notes on what was corrected and where the logic lives in the dbt models.
 
 Finally, I reconcile the two source systems in the core layer to create a trusted source-of-truth view of each subscription. The reconciliation process compares the internal and billing datasets, flags mismatches and duplicates, and produces a unified  dataset that is suitable for downstream analysis and reporting.
 

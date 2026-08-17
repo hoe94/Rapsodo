@@ -22,7 +22,7 @@ This ensures all relative paths in the dbt project are resolved correctly.
 
 **Step 2: Initialize dbt**
 
-Initialize the dbt project by running:
+Initialize the dbt project by running the make command:
 
 ```bash
 make setup-dbt
@@ -38,7 +38,7 @@ This command performs:
 
 **Step 3: Load Common Mapping Reference Tables**
 
-Before running the staging models, load the lookup tables used by the transformation logic:
+Before running the staging models, load the lookup tables used by the transformation logic by running the make command:
 
 ```bash
 make common-mapping-rapsodo-seed
@@ -52,29 +52,13 @@ It creates and loads the `common_mapping` tables used for:
 - status standardization (`status_mapping`)
 - DQ issue categorization (`user_dq_issue_category`)
 
-## Available Make Commands
 
+---
 Once you're in the `data-dbt/rapsodo` directory, you can run the following commands:
 
----
+### 1. Level 1 (L1) Data Quality Tests - Raw Layer
 
-### 2. Load Common Mapping Lookup Tables
-
-```bash
-make common-mapping-rapsodo-seed
-```
-
-**Purpose:** Create and populate the reference tables used by the dbt models for status/plan normalization and DQ tracking.
-
-**What it does:**
-- Creates the `common_mapping` schema if needed
-- Loads `plan_mapping`
-- Loads `status_mapping`
-- Loads `user_dq_issue_category`
-
----
-
-### 3. Level 1 (L1) Data Quality Tests - Raw Layer
+Run the DBT Level 1 (L1) Data Quality Tests Script:
 
 ```bash
 make raw-rapsodo-dbt-l1-test
@@ -88,17 +72,19 @@ The L1 DQ tests validate the integrity of source data by checking:
 - **Null Values:** Ensures critical fields are not null and data completeness
 - **Uniqueness:** Verifies that primary key and unique identifier fields have no duplicates
 - **List of Values Acceptance:** Validates that categorical fields contain only expected values from a predefined list
-- **Length of Value:** Checks that string fields conform to expected length constraints
+- **Length of Value:** Checks that fields conform to expected length constraints
 
 **What it does:**
-- Runs quality tests on the `internal_subscriptions` source
-- Runs quality tests on the `billing_subscriptions` source
+- Runs quality tests on the `internal_subscriptions.yml` source
+- Runs quality tests on the `billing_subscriptions.yml` source
 - Validates data integrity from source systems
 - Reports any data quality violations
 
 ---
 
-### 4. Build Staging Layer Models
+### 2. Build Staging Layer Models
+
+Run the DBT Model Script by make command:
 
 ```bash
 make staging-rapsodo-dbt-run
@@ -113,7 +99,9 @@ make staging-rapsodo-dbt-run
 
 ---
 
-### 5. Level 2 (L2) Data Quality Tests - Staging Layer
+### 3. Level 2 (L2) Data Quality Tests - Staging Layer
+
+Run the DBT Level 2 (L2) Data Quality Tests Script:
 
 ```bash
 make staging-rapsodo-dbt-l2-test
@@ -134,8 +122,9 @@ The L2 DQ tests ensure data consistency and integrity across transformed tables:
 
 ---
 
-### 6. Build Core Layer Models
+### 4. Build Core Layer Models
 
+Run the DBT Model Script by make command:
 ---
 
 ```bash
